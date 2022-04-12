@@ -19,7 +19,7 @@ def robustAlgo(img):
     brightness = func.brightness(img_gry,printbrightness=1)
 if __name__=="__main__":
     color = ('r', 'g', 'b')
-    img = func.loadAndPrintImg('D:/Arpita/RCTS/Anemia/anemia1.PNG',0)
+    img = func.loadAndPrintImg('./Anemia/anemia1.PNG',0)
     func.plot_colorHist(color,img,'Anemic',0)
     r_shape1,g_shape1,b_shape1 = func.colorDist(img,'Anemic',0)
     # hhr1,img_hh1,hshap1 = func.HHR(img,110)
