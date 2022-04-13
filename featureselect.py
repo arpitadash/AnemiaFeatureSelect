@@ -17,6 +17,7 @@ def quickAlgo(img,r_shape1,b_shape1,g_shape1,threshold):
 def robustAlgo(img):
     img_gry, h_1 = func.entropyCalc(img,printhist=0)
     brightness = func.brightness(img_gry,printbrightness=1)
+    
 if __name__=="__main__":
     color = ('r', 'g', 'b')
     img = func.loadAndPrintImg('D:/Arpita/RCTS/Anemia/anemia1.PNG',0)
