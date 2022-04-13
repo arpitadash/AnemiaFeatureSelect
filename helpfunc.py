@@ -8,13 +8,17 @@ import matplotlib.pyplot as plt
 from collections import Counter
 import scipy.spatial.distance
 
-# def plot_colorHist(title=''):
-#   # x = 
-#   plt.plot(np.arange(10,100))    
-#   plt.title(title)
-#   plt.show()
-#   return
 def plot_colorHist(color,img,title='',printimg=1):
+  """
+  Plots the histogram of the color mentioned
+  Inputs: 
+    color: The color channel (Red/Green/Blue)
+    img : The image variable
+    title (Optional variables): title of the histogram plot
+    printimg: 0 (don't plot histogram) or 1 (plot histogram)
+  Output : Null
+
+  """
   for i, col in enumerate(color):
     histr = cv2.calcHist([img], [i], None, [256], [0, 256])
     if printimg==1:
@@ -26,6 +30,14 @@ def plot_colorHist(color,img,title='',printimg=1):
   return
 
 def plot_pixelDistr(r_shape,color,title=''):
+  """
+  Plots distribution of the pixels - rgb color image
+  Inputs:
+    r_shape: 1-D array of values of the colour
+    color: Color of interest
+    title (optional): title of the plot
+    Output: Nothing, print plot
+  """
   hist, bin_edges = np.histogram(r_shape)
   n, bins, patches = plt.hist(x=r_shape, bins='auto', color=color,
                               alpha=0.7, rwidth=0.85)
@@ -38,6 +50,10 @@ def plot_pixelDistr(r_shape,color,title=''):
   return
 
 def PVM(col_shape):
+  """
+  Inputs: 
+  col_shape: [r,g,b]
+  """
   # r_pos = np.where((img[:,:,0] > r[0]))
   print('Calculating PVM\n')
   # print(np.shape(col_shape)[0])
@@ -90,6 +106,16 @@ def probFunc(equ_shape):
 
 
 def colorDist(img,title='',disp=1):
+  """
+  Inputs: 
+  img: image in array format with RGB channels
+  title (optional): Title of the plot
+  disp = 0 (no plot) or 1 (show plot)
+  Output:
+  r_shape:(size : width*height,1); reshaped pixel values for color red (size : width*height,1)
+  b_shape:(size : width*height,1); reshaped pixel values for color blue
+  g_shape:(size : width*height,1); reshaped pixel values for color green 
+  """
   ht = img.shape[0]
   wid = img.shape[1]
   r_shape,b_shape,g_shape = img[:,:,0].reshape(wid*ht,1),img[:,:,2].reshape(wid*ht,1),img[:,:,1].reshape(wid*ht,1),
@@ -102,8 +128,6 @@ def colorDist(img,title='',disp=1):
     plt.show()
   return r_shape,g_shape,b_shape
 
-
-#RGB to HSV space
 def HHR(img,threshold,printimg=1):
   height,width,channel = img.shape
   img_hsv = np.zeros((height,width,3))
