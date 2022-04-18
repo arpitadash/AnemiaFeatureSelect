@@ -49,33 +49,15 @@ def plot_pixelDistr(r_shape,color,title=''):
 
   return
 
-def PVM(col_shape):
-  """
-  Inputs: 
-  col_shape: [r,g,b]
-  """
-  # r_pos = np.where((img[:,:,0] > r[0]))
-  print('Calculating PVM\n')
-  # print(np.shape(col_shape)[0])
-  # pvm_r = []
-  pvm_r = np.zeros((np.shape(col_shape)[0],1))
-  # print(pvm_r.shape)
-  for i in range(np.shape(col_shape)[0]):
-    # print(i)
-    r_shape = col_shape[i]
-    # print(r_shape)
-    r = np.percentile(r_shape,[40,60])
-    # print(r.shape)
-    r_pos = np.where((r_shape> r[0]))
-    # print(r_pos)
-    r_pos_y=r_pos[0]
-    # plt.plot(r_shape,color='red')
-    # r_pos_reshape=np.reshape(r_pos,(3,wid,ht))
-    #Calculating the PVM value
-    pvm_r[i] = (1/(r_pos_y[-1]-r_pos_y[0]+1))*np.sum(r_shape[r_pos_y])
-  return pvm_r
 
 def show_grayscale(img,printimg=1):
+  '''
+  Inputs: 
+  img: image in array format with RGB channels
+  printimg(default 1): Print grayscale image if 1
+  Output:
+  img_gry: the grayscale image 
+  '''
   img_gry = cv2.cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   if printimg==1:
     plt.imshow(img_gry)
@@ -83,10 +65,24 @@ def show_grayscale(img,printimg=1):
   return img_gry
 
 def convertBGRtoRGB(img1):
+  '''
+  Inputs:
+  img1: Array of the image with BGR channel format
+  Outputs:
+  img1: Array of the image in RGB channel format
+  '''
   img1[:,:,[0,2]] = img1[:,:,[2,0]]
   return img1
 
 def entropy(equ_shape,p_x):
+  '''
+  This function calculates the entropy of the pixels in the grayscale image
+  Inputs:
+  equ_shape: Equalized histogram of the grayscale image
+  p_x: Probability function of the pixel values in the image
+  Outputs:
+  H_x: The entropy of pixels in the grayscale image
+  '''
   H_x = 0
   for i in equ_shape:
     H_x += p_x[i]*np.log(p_x[i])
@@ -94,6 +90,13 @@ def entropy(equ_shape,p_x):
   return H_x
 
 def probFunc(equ_shape):
+  '''
+  The probability of finding a pixel value in the image
+  Inputs:
+  equ_shape: The equalized histogram of grayscale values
+  Outputs:
+  p_x: The probability function of the grayscale pixel values
+  '''
   unique_x = set(equ_shape)
   # print(unique_x)
   total_pixel = wid*ht
@@ -129,6 +132,17 @@ def colorDist(img,title='',disp=1):
   return r_shape,g_shape,b_shape
 
 def HHR(img,threshold,printimg=1):
+  '''
+  Inputs:
+  img: image in array format with RGB channels
+  threshold: threshold to consider for the high hue ratio. Try 100
+  printimg(opt): plot histogram of hue values (default 1); 0 to not plot
+
+  Outputs:
+  hhr : high hue ratio value
+  img_hh: Pixels with the high hue value
+  h_shape: HSV pixel values
+  '''
   height,width,channel = img.shape
   img_hsv = np.zeros((height,width,3))
   img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -157,6 +171,14 @@ def HHR(img,threshold,printimg=1):
 
 #Print image
 def loadAndPrintImg(imagename,printimg=1):
+  '''
+  This function loads and prepares the image to an array with RGB channels
+  input: i
+  imagename: Name of the file to be loaded
+  printimg(default 1): print image then 1, else 0
+  output: 
+  img1: array with pixel values for RGB channels.
+  '''
   print(imagename)
   img1 = convertBGRtoRGB(cv2.imread(imagename,1))
   if printimg==1:
@@ -164,14 +186,57 @@ def loadAndPrintImg(imagename,printimg=1):
     plt.title(imagename)
     plt.show()
   return img1
+def PVM(col_shape):
+  """
+  Inputs: 
+  col_shape: [r,g,b]
+  Outputs:
+  pvm_r: Pixel values mean for each of the R,G,B channels
+  """
+  # r_pos = np.where((img[:,:,0] > r[0]))
+  print('Calculating PVM\n')
+  # print(np.shape(col_shape)[0])
+  # pvm_r = []
+  pvm_r = np.zeros((np.shape(col_shape)[0],1))
+  # print(pvm_r.shape)
+  for i in range(np.shape(col_shape)[0]):
+    # print(i)
+    r_shape = col_shape[i]
+    # print(r_shape)
+    r = np.percentile(r_shape,[40,60])
+    # print(r.shape)
+    r_pos = np.where((r_shape> r[0]))
+    # print(r_pos)
+    r_pos_y=r_pos[0]
+    # plt.plot(r_shape,color='red')
+    # r_pos_reshape=np.reshape(r_pos,(3,wid,ht))
+    #Calculating the PVM value
+    pvm_r[i] = (1/(r_pos_y[-1]-r_pos_y[0]+1))*np.sum(r_shape[r_pos_y])
+  return pvm_r
 
 def PVM_main(rshape1,bshape1,gshape1):
+  '''
+  Input: Reshaped arrays (wid*ht,1) of the color channels. Usually output from colorDist function
+  rshape1: Red channel (wid*ht,1)
+  bshape1: Blue channel (wid*ht,1)
+  gshape1: Green channel (wid*ht,1)
+  Output:
+  pvm_r1: pixel value means for each of the color channel
+  '''
   pvm_r1 = PVM([rshape1,bshape1,gshape1])
-  # pvm_b1 = PVM(bshape1)
-  # pvm_g1 = PVM(gshape1)
   return pvm_r1
 
 def entropyCalc(img,printhist=1):
+  '''
+  The function calculates the entropy to detect textures (capillaries that are prominent in the case of pallor) in the image
+  First, the image is converted to grayscale. Second, the G component is histogram equalized. Then the entropy is calculated using entropy function.
+  Input:
+  img: The image array with pixel values for RGB channels
+  printhist(default 1): 1 to plot histogram of grayscale values
+  Output:
+  img_gry: the grayscale image 
+  h_1: entropy of the grayscale image.
+  '''
   img_gry = show_grayscale(img)
   equ = cv2.equalizeHist(img_gry)
   wid=img.shape[0]
@@ -188,6 +253,14 @@ def entropyCalc(img,printhist=1):
   return img_gry,h_1
 
 def brightness(img_gry,printbrightness=1):
+  '''
+  The brightness of the image which is the average grayscale of the image
+  Inputs:
+  img_gry: The grayscale image
+  printbrightness(defalt 1): To plot thefrequency of the grayscale values of the image 
+  Outputs:
+  brght: The mean brightness of the image
+  '''
   wid = img_gry.shape[0]
   ht = img_gry.shape[1]
   img_gry_reshape = np.reshape(img_gry,wid*ht)
