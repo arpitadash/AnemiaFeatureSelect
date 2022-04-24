@@ -41,4 +41,6 @@ if __name__=="__main__":
     threshold=110
     if choiceAlgo:
         quickAlgo(img,r_shape1,b_shape1,g_shape1,threshold)
+    else
+        robustAlgo(img)
 
