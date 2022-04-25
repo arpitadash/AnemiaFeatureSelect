@@ -131,13 +131,13 @@ def colorDist(img,title='',disp=1):
     plt.show()
   return r_shape,g_shape,b_shape
 
-def HHR(img,threshold,printimg=1):
+def HHR(img,threshold,printimg=1,binarize=0):
   '''
   Inputs:
   img: image in array format with RGB channels
   threshold: threshold to consider for the high hue ratio. Try 100
   printimg(opt): plot histogram of hue values (default 1); 0 to not plot
-
+  binarize(default=0): if 1, binarize the HHR values (1 if HHR>0 else 0), else return HHR values as such
   Outputs:
   hhr : high hue ratio value
   img_hh: Pixels with the high hue value
@@ -166,7 +166,9 @@ def HHR(img,threshold,printimg=1):
   # print(len(img_hh))
   n_pixel_highhue = len(img_hh)
   hhr = n_pixel_highhue/(height*width)
-  # print(hhr)
+  if binarize:
+    if hhr>0:
+      hhr = 1
   return hhr,img_hh,h_shape
 
 #Print image
