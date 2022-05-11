@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy as np
+from math import log
 import cv2
 from itertools import chain
 import matplotlib.pyplot as plt
@@ -28,6 +29,17 @@ def plot_colorHist(color,img,title='',printimg=1):
     plt.title(title)
     plt.show()
   return
+
+def EI(rbright1,gbright1):
+  """
+  Calculates the erythema index
+  Inputs: 
+  rbright1: Brightness of the R channel
+  gbright1: Brightness of the G channel
+  Outputs:
+  EI: Erythema index of the image
+  """
+  return log(rbright1)-log(gbright1)
 
 def plot_pixelDistr(r_shape,color,title=''):
   """
@@ -71,8 +83,8 @@ def convertBGRtoRGB(img1):
   Outputs:
   img1: Array of the image in RGB channel format
   '''
-  img1[:,:,[0,2]] = img1[:,:,[2,0]]
-  return img1
+  # img1[:,:,[0,2]] = img1[:,:,[2,0]]
+  return cv2.cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
 
 def entropy(equ_shape,p_x):
   '''

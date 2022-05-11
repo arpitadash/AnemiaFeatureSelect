@@ -8,7 +8,7 @@ import scipy.spatial.distance
 import helpfunc as func
 
 #Quick Algorithm
-def quickAlgo(img,r_shape1,b_shape1,g_shape1,threshold):
+def quickAlgo(img,img_shape,threshold):
     '''
     This is the quick algorithm that considers the pixel value mean and the high hue ratio to classify images (anemia and non anemia).
     Inputs:
@@ -23,14 +23,24 @@ def quickAlgo(img,r_shape1,b_shape1,g_shape1,threshold):
     '''
     hhr1,img_hh1,hshap1 = func.HHR(img,threshold,0)
     print(hhr1)
-    pvm_r1,pvm_b1,pvm_g1 = func.PVM_main(r_shape1,b_shape1,g_shape1)
+    pvm_r1,pvm_b1,pvm_g1 = func.PVM_main(img_shape[0],img_shape[2],img_shape[1])
     print(pvm_r1,pvm_b1,pvm_g1 )
     return hhr1, pvm_r1,pvm_b1,pvm_g1 
 
-def robustAlgo(img):
+def robustAlgo(img,img_shape,threshold=100):
+    """
+    This is the robust algorithm. It returns features for classification like entropy (texture information), PVM and HHR (colour information), Erythema Index, and brightness.
+    Inputs:
+    img: The image array with RGB channels
+    img_shape: The reshaped arrays containing values for RGB channels
+    threshold: Threshold for HHR calculations
+    """
     img_gry, h_1 = func.entropyCalc(img,printhist=0)
     brightness = func.brightness(img_gry,printbrightness=1)
-    
+    ei = func.EI(brightness(img[:,:,0]),brightness(img[:,:,1]))
+    bin_hhr = func.HHR(img,threshold,0,1)
+    pvm_r1,pvm_b1,pvm_g1 = func.PVM_main(img_shape[0],img_shape[2],img_shape[1])
+
 if __name__=="__main__":
     color = ('r', 'g', 'b')
     img = func.loadAndPrintImg('./Anemia/anemia1.PNG',0)
@@ -39,8 +49,9 @@ if __name__=="__main__":
     # hhr1,img_hh1,hshap1 = func.HHR(img,110)
     choiceAlgo = int(input('quick algo or robust algo'))
     threshold=110
+    img_shape = [r_shape1,b_shape1,g_shape1]
     if choiceAlgo:
-        quickAlgo(img,r_shape1,b_shape1,g_shape1,threshold)
-    else
-        robustAlgo(img)
+        quickAlgo(img,img_shape,threshold)
+    else:
+        robustAlgo(img,img_shape,threshold)
 
